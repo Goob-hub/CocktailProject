@@ -1,0 +1,10 @@
+<% for (let i = 0; i < drinks.length; i++) { const drink = drinks[i];%>
+    <h1><%= drink.strDrink %></h1>
+
+    <ul>
+        <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
+            <li><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
+        <% } %>
+    </ul>
+    
+<% } %>

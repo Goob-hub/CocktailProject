@@ -1,0 +1,18 @@
+<%- include("partials/header.ejs") %>
+
+<h1>Here is a title</h1>
+
+<form action="/random" method="post">
+    <button type="submit">Click for random drink!</button>
+</form>
+
+<div>
+    <% if(locals.drinks) { %>
+        <%- include("partials/drink.ejs") %>
+    <% } else { %>
+        <p>No drink requested.</p>
+    <% } %>
+</div>
+
+</body>
+</html>
