@@ -1,8 +1,17 @@
 # CocktailProject
 
+<<<<<<< HEAD
+
 A project that makes use of a cocktail api for users to search recipes for cocktails!
 
 # Things I learned about while making this
+
+=======
+A project that makes use of a cocktail api for users to search recipes for cocktails!
+
+# Things I learned about while making this
+
+> > > > > > > 8e2e6d9819de1ec996238893095cabf38a96fb92
 
 - How to make requests from an api and use/display the returned data.
 - How to manipulate and re-fromat data in objects to make it easier to use, read, and proccess that data.
