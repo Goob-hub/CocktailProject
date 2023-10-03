@@ -1,0 +1,14 @@
+<%- include("partials/header.ejs") %>
+
+<div>
+    <% if(locals.drinks) { %>
+        <%- include("partials/drinkCard.ejs") %>
+    <% } %>
+</div>
+
+<form action="/backHome" method="post">
+    <button class="btn" type="submit">Back</button>
+</form>
+    
+</body>
+</html>

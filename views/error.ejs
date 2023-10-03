@@ -1,0 +1,12 @@
+<%- include("partials/header.ejs") %>
+
+<% if(locals.err) { %>
+    <h1><%= err %></h1>    
+<% } %>
+
+<form action="/backHome" method="post">
+    <button class="btn" type="submit">Back</button>
+</form>
+
+</body>
+</html>

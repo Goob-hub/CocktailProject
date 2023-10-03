@@ -2,17 +2,19 @@
 
 <h1>Here is a title</h1>
 
-<form action="/random" method="post">
-    <button type="submit">Click for random drink!</button>
+<form action="/searchDrink" method="post">
+    <input name="drinkName" type="text" placeholder="Search by name or letter" />
+    <input class="btn" type="submit" value="Submit" />
 </form>
 
-<div>
-    <% if(locals.drinks) { %>
-        <%- include("partials/drink.ejs") %>
-    <% } else { %>
-        <p>No drink requested.</p>
-    <% } %>
-</div>
+<form action="/searchIngredient" method="post">
+    <input name="ingredient" type="text" placeholder="Search by ingredient" />
+    <input class="btn" type="submit" value="Submit" />
+</form>
+
+<form action="/random" method="post">
+    <button class="btn" type="submit">Click for random drink!</button>
+</form>
 
 </body>
 </html>

@@ -6,6 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const url = "https://www.thecocktaildb.com/api/json/v1/1";
 
+let curDrinkData;
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
@@ -70,6 +72,49 @@ app.get("/", (req, res) => {
     res.render("index.ejs")
 });
 
+app.post("/searchDrink", async (req, res) => {
+    const query = req.body.drinkName;
+    let searchMethod;
+    
+    //Checks if user is searching by a full name or single letter
+    if(query.length > 1) {
+        searchMethod = `/search.php?s=${query}`
+    } else {
+        searchMethod = `/search.php?f=${query}`
+    }
+
+    try{ 
+        //Returns an array of drink objects that are poorly formatted
+        const response = await axios.get(`${url}${searchMethod}`);
+        
+        //Drink data is now easier to read and use :D!
+        const result = formatData(response.data.drinks);
+        curDrinkData = result;
+        
+        res.render("results.ejs", {drinks: result});
+    } catch(error) {
+        res.render("error.ejs", {err: error.message});
+    }
+});
+
+app.post("/searchIngredient", async (req, res) => {
+    const query = req.body.ingredient;
+
+    try{
+        //Returns the entire lore of a specific ingredient 
+        const response = await axios.get(`${url}/search.php?i=${query}`);
+
+        if(response.data.ingredients == null) {
+            throw new Error("Sorry, there are no results that match your search :("); 
+        }
+        
+        const result = response.data.ingredients[0];
+        res.render("ingredient.ejs", {ingredient: result});  
+    } catch(error) {
+        res.render("error.ejs", {err: error.message});
+    }
+});
+
 app.post("/random", async (req, res) => {
     try{
         //Returns an array of drink objects that are poorly formatted 
@@ -77,11 +122,31 @@ app.post("/random", async (req, res) => {
         
         //Drink data is now easier to read and use :D!
         const result = formatData(response.data.drinks);
+        curDrinkData = result;
         
-        res.render("index.ejs", {drinks: result});
+        res.render("results.ejs", {drink: result});
     } catch(error) {
-        res.render("index.ejs", {recipe: error.message});
+        res.render("error.ejs", {err: error.message});
     }
+});
+
+app.post("/drinkInfo", (req, res) => {
+    let curDrink;
+    let drinkId = req.body.id;
+
+    curDrinkData.forEach(drink => {
+        if(drink.idDrink === drinkId){ curDrink = drink; return;}
+    });
+
+    res.render("drinkInfo.ejs", {drink: curDrink});
+});
+
+app.post("/backToDrinks", (req, res) => {
+    res.render("results.ejs", {drinks: curDrinkData})
+});
+
+app.post("/backHome", (req, res) => {
+    res.render("index.ejs");
 });
 
 app.listen(PORT, () => {

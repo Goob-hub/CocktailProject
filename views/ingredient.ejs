@@ -1,0 +1,13 @@
+<%- include("partials/header.ejs") %>
+
+<% if(locals.ingredient) { %>
+    <h1><%= ingredient.strIngredient %></h1>
+    <p><%= ingredient.strDescription %></p>    
+<% } %>
+
+<form action="/backHome" method="post">
+    <button class="btn" type="submit">Back</button>
+</form>
+
+</body>
+</html>

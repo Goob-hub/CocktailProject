@@ -1,0 +1,21 @@
+<%- include("partials/header.ejs") %>
+
+<h1>Drink info</h1>
+
+<% if(locals.drink) { %>
+    <h1><%= drink.strDrink %></h1>
+    <p><%= drink.strCategory %></p>
+    <ul>
+        <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
+            <li><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
+        <% } %>
+    </ul>
+    <p><%= drink.strInstructions %></p>
+<% } %>
+
+<form action="/backToDrinks" method="post">
+    <button class="btn" type="submit">Back</button>
+</form>
+
+</body>
+</html>

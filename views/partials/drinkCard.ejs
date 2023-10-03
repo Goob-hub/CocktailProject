@@ -1,0 +1,12 @@
+<% for (let i = 0; i < drinks.length; i++) { const drink = drinks[i];%>
+    <div class="drink">
+        <h1><%= drink.strDrink %></h1>
+        <p><%= drink.strCategory %></p>
+        
+        <img src="<%= drink.strDrinkThumb %>" alt="Image of drink">
+
+        <form action="/drinkInfo" method="post">
+            <button class="btn" type="submit" value="<%= drink.idDrink %>" name="id">More info</button>
+        </form>
+    </div>
+<% } %>
