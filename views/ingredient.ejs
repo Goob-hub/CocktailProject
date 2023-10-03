@@ -1,11 +1,19 @@
 <%- include("partials/header.ejs") %>
 
-<% if(locals.ingredient) { %>
-    <h1><%= ingredient.strIngredient %></h1>
-    <p><%= ingredient.strDescription %></p>    
+<% if(locals.ingredients) { %>
+    <% for (let i = 0; i < ingredients.length; i++) { const ingredient = ingredients[i]; %>
+        <h1><%= ingredient.strIngredient %></h1>
+        <p>Type: <%= ingredient.strType %></p>
+        <p>Alcoholic: <%= ingredient.strAlcohol %></p>
+        <p><%= ingredient.strDescription %></p>    
+    <% } %>
 <% } %>
 
 <form action="/backHome" method="post">
+    <button class="btn" type="submit">Home</button>
+</form>
+
+<form action="/drinkInfo" method="post">
     <button class="btn" type="submit">Back</button>
 </form>
 

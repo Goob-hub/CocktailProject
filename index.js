@@ -6,7 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const url = "https://www.thecocktaildb.com/api/json/v1/1";
 
-let curDrinkData;
+let curDrinkSearchData;
+let curDrink;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -73,6 +74,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/searchDrink", async (req, res) => {
+    //Rework with new filters
     const query = req.body.drinkName;
     let searchMethod;
     
@@ -87,9 +89,14 @@ app.post("/searchDrink", async (req, res) => {
         //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}${searchMethod}`);
         
+        if(response.data.drinks == null) {
+            throw new Error("Sorry, there are no results that match your search :("); 
+        }
+
         //Drink data is now easier to read and use :D!
         const result = formatData(response.data.drinks);
-        curDrinkData = result;
+        
+        curDrinkSearchData = result;
         
         res.render("results.ejs", {drinks: result});
     } catch(error) {
@@ -99,17 +106,16 @@ app.post("/searchDrink", async (req, res) => {
 
 app.post("/searchIngredient", async (req, res) => {
     const query = req.body.ingredient;
-
     try{
         //Returns the entire lore of a specific ingredient 
         const response = await axios.get(`${url}/search.php?i=${query}`);
-
-        if(response.data.ingredients == null) {
+        const result = response.data.ingredients;
+        
+        if(result == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
-        
-        const result = response.data.ingredients[0];
-        res.render("ingredient.ejs", {ingredient: result});  
+        console.log(result)
+        res.render("ingredient.ejs", {ingredients: result});  
     } catch(error) {
         res.render("error.ejs", {err: error.message});
     }
@@ -120,29 +126,36 @@ app.post("/random", async (req, res) => {
         //Returns an array of drink objects that are poorly formatted 
         const response = await axios.get(`${url}/random.php`);
         
+        if(response.data.drinks == null) {
+            throw new Error("Sorry, there are no results that match your search :("); 
+        }
+        
         //Drink data is now easier to read and use :D!
         const result = formatData(response.data.drinks);
-        curDrinkData = result;
         
-        res.render("results.ejs", {drink: result});
+        curDrinkSearchData = result;
+        
+        res.render("results.ejs", {drinks: result});
     } catch(error) {
         res.render("error.ejs", {err: error.message});
     }
 });
 
 app.post("/drinkInfo", (req, res) => {
-    let curDrink;
     let drinkId = req.body.id;
 
-    curDrinkData.forEach(drink => {
+    if(drinkId == null && curDrink == null){
+        throw new Error("Error 404 :(")
+    }
+    curDrinkSearchData.forEach(drink => {
         if(drink.idDrink === drinkId){ curDrink = drink; return;}
     });
-
     res.render("drinkInfo.ejs", {drink: curDrink});
+    
 });
 
 app.post("/backToDrinks", (req, res) => {
-    res.render("results.ejs", {drinks: curDrinkData})
+    res.render("results.ejs", {drinks: curDrinkSearchData})
 });
 
 app.post("/backHome", (req, res) => {
@@ -151,4 +164,4 @@ app.post("/backHome", (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
-})
+});

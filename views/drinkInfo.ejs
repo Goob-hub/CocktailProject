@@ -4,10 +4,15 @@
 
 <% if(locals.drink) { %>
     <h1><%= drink.strDrink %></h1>
-    <p><%= drink.strCategory %></p>
+    <p>
+        <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
+    </p>
     <ul>
         <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
             <li><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
+            <form action="/searchIngredient" method="post">
+                <button type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>
+            </form>
         <% } %>
     </ul>
     <p><%= drink.strInstructions %></p>
