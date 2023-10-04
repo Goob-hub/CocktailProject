@@ -153,26 +153,6 @@ app.post("/searchIngredient", async (req, res) => {
     }
 });
 
-// app.post("/random", async (req, res) => {
-//     try{
-//         //Returns an array of drink objects that are poorly formatted 
-//         const response = await axios.get(`${url}/random.php`);
-//         let result = response.data.drinks
-//         if(response.data.drinks == null) {
-//             throw new Error("Sorry, there are no results that match your search :("); 
-//         }
-        
-//         //Drink data is now easier to read and use :D!
-//         const formattedResult = formatData(response.data.drinks);
-        
-//         curDrinkSearchResults = result;
-        
-//         res.render("results.ejs", {drinks: result});
-//     } catch(error) {
-//         res.render("error.ejs", {err: error.message});
-//     }
-// });
-
 app.post("/drinkInfo", (req, res) => {
     let drinkId = req.body.id;
 
