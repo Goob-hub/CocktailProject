@@ -4,17 +4,12 @@
 
 <form action="/searchDrink" method="post">
     <input name="drinkName" type="text" placeholder="Search by name or letter" />
-    <input name="ingredient" type="text" placeholder="Filter by ingredient" />
-    <select class="form-select" name="alcoholic">
-        <option selected>Open to filter Alcoholic</option>
-        <option value="Alcoholic">Alcoholic</option>
-        <option value="Non-Alcoholic">Non-Alcoholic</option>
-    </select>
-    <input class="btn" type="submit" value="Submit" />
+    <input name="ingredient" type="text" placeholder="Has specific ingredient" />
+    <input class="btn" type="submit" value="Discover drinks" />
 </form>
 
-<form action="/random" method="post">
-    <button class="btn" type="submit">Click for random drink!</button>
+<form action="/searchDrink" method="post">
+    <button class="btn" type="submit" name="getRandomDrink" value="true">Click for random drink!</button>
 </form>
 
 </body>

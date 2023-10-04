@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const url = "https://www.thecocktaildb.com/api/json/v1/1";
 
-let curDrinkSearchData;
+let curDrinkSearchResults;
 let curDrink;
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -60,7 +60,7 @@ function formatIngredientData(drinksArr){
     return newDrinksArr;
 }
 
-function formatData(drinksArr) {
+function formatDrinks(drinksArr) {
     let formattedDrinks;
 
     cleanObjects(drinksArr);
@@ -69,77 +69,109 @@ function formatData(drinksArr) {
     return formattedDrinks;
 }
 
+function determineSearchMethod(data) {
+    let searchMethod = "";
+    const drinkName = data.drinkName;
+    const getRandomDrink = data.getRandomDrink;
+
+    if(getRandomDrink){
+        return "/random.php"
+    }
+
+    if(drinkName.length > 1){
+        searchMethod = `/search.php?s=${drinkName}`
+    } else {
+        searchMethod = `/search.php?f=${drinkName}`
+    }
+
+    return searchMethod
+}
+
+function filterDrinks(drinksArr, ingredientFilter) {
+    let newDrinkArr = [];
+    
+    if(ingredientFilter === "" || ingredientFilter == null){
+        return drinksArr;
+    }
+
+    drinksArr.forEach(drink => {
+        drink.ingredients.forEach(ingredient => {
+            let ingredientName = ingredient.name.toLowerCase();
+            if(ingredientName.includes(ingredientFilter)){
+                newDrinkArr.push(drink)
+                return;
+            }
+        });
+    });
+
+    return newDrinkArr;
+}
+
 app.get("/", (req, res) => {
     res.render("index.ejs")
 });
 
 app.post("/searchDrink", async (req, res) => {
     //Rework with new filters
-    const query = req.body.drinkName;
-    let searchMethod;
-    
-    //Checks if user is searching by a full name or single letter
-    if(query.length > 1) {
-        searchMethod = `/search.php?s=${query}`
-    } else {
-        searchMethod = `/search.php?f=${query}`
-    }
+    const data = req.body;
+    const ingredientFilter = data.ingredient;
+    let searchMethod = determineSearchMethod(data);
 
     try{ 
         //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}${searchMethod}`);
-        
-        if(response.data.drinks == null) {
+        let result = response.data.drinks;
+        if(result == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
-
         //Drink data is now easier to read and use :D!
-        const result = formatData(response.data.drinks);
+        let formattedDrinkData = formatDrinks(result);
+        //Filter through drinks
+        let filteredDrinkData = filterDrinks(formattedDrinkData, ingredientFilter);
         
-        curDrinkSearchData = result;
+        curDrinkSearchResults = filteredDrinkData;
         
-        res.render("results.ejs", {drinks: result});
+        res.render("results.ejs", {drinks: curDrinkSearchResults});
     } catch(error) {
         res.render("error.ejs", {err: error.message});
     }
 });
 
 app.post("/searchIngredient", async (req, res) => {
-    const query = req.body.ingredient;
+    const ingredient = req.body.ingredient;
     try{
         //Returns the entire lore of a specific ingredient 
-        const response = await axios.get(`${url}/search.php?i=${query}`);
+        const response = await axios.get(`${url}/search.php?i=${ingredient}`);
         const result = response.data.ingredients;
         
         if(result == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
-        console.log(result)
         res.render("ingredient.ejs", {ingredients: result});  
     } catch(error) {
         res.render("error.ejs", {err: error.message});
     }
 });
 
-app.post("/random", async (req, res) => {
-    try{
-        //Returns an array of drink objects that are poorly formatted 
-        const response = await axios.get(`${url}/random.php`);
+// app.post("/random", async (req, res) => {
+//     try{
+//         //Returns an array of drink objects that are poorly formatted 
+//         const response = await axios.get(`${url}/random.php`);
+//         let result = response.data.drinks
+//         if(response.data.drinks == null) {
+//             throw new Error("Sorry, there are no results that match your search :("); 
+//         }
         
-        if(response.data.drinks == null) {
-            throw new Error("Sorry, there are no results that match your search :("); 
-        }
+//         //Drink data is now easier to read and use :D!
+//         const formattedResult = formatData(response.data.drinks);
         
-        //Drink data is now easier to read and use :D!
-        const result = formatData(response.data.drinks);
+//         curDrinkSearchResults = result;
         
-        curDrinkSearchData = result;
-        
-        res.render("results.ejs", {drinks: result});
-    } catch(error) {
-        res.render("error.ejs", {err: error.message});
-    }
-});
+//         res.render("results.ejs", {drinks: result});
+//     } catch(error) {
+//         res.render("error.ejs", {err: error.message});
+//     }
+// });
 
 app.post("/drinkInfo", (req, res) => {
     let drinkId = req.body.id;
@@ -147,7 +179,7 @@ app.post("/drinkInfo", (req, res) => {
     if(drinkId == null && curDrink == null){
         throw new Error("Error 404 :(")
     }
-    curDrinkSearchData.forEach(drink => {
+    curDrinkSearchResults.forEach(drink => {
         if(drink.idDrink === drinkId){ curDrink = drink; return;}
     });
     res.render("drinkInfo.ejs", {drink: curDrink});
@@ -155,7 +187,7 @@ app.post("/drinkInfo", (req, res) => {
 });
 
 app.post("/backToDrinks", (req, res) => {
-    res.render("results.ejs", {drinks: curDrinkSearchData})
+    res.render("results.ejs", {drinks: curDrinkSearchResults})
 });
 
 app.post("/backHome", (req, res) => {
