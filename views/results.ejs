@@ -1,14 +1,22 @@
 <%- include("partials/header.ejs") %>
 
-<div>
+<div class="drinks-container">
     <% if(locals.drinks) { %>
-        <%- include("partials/drinkCard.ejs") %>
+        <% for (let i = 0; i < drinks.length; i++) { const drink = drinks[i];%>
+            <div class="drink" style="background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('<%= drink.strDrinkThumb %>');">
+                <div class="info-container">
+                    <h1><%= drink.strDrink %></h1>
+                    <form action="/drinkInfo" method="post">
+                        <button class="btn btn-primary" type="submit" value="<%= drink.idDrink %>" name="id">More info</button>
+                    </form>
+                </div>
+            </div>
+        <% } %>
     <% } %>
 </div>
 
 <form action="/backHome" method="post">
-    <button class="btn" type="submit">Back</button>
+    <button class="btn btn-primary" type="submit">Back</button>
 </form>
     
-</body>
-</html>
+<%- include("partials/footer.ejs") %>

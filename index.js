@@ -8,6 +8,7 @@ const url = "https://www.thecocktaildb.com/api/json/v1/1";
 
 let curDrinkSearchResults;
 let curDrink;
+let curFilter;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -64,47 +65,35 @@ function formatDrinks(drinksArr) {
     let formattedDrinks;
 
     cleanObjects(drinksArr);
+
     formattedDrinks = formatIngredientData(drinksArr);
 
     return formattedDrinks;
 }
 
 function determineSearchMethod(data) {
-    let searchMethod = "";
     const drinkName = data.drinkName;
+    const ingredientFilter = data.ingredient;
+    const alcoholFilter = data.alcohol;
     const getRandomDrink = data.getRandomDrink;
 
     if(getRandomDrink){
-        return "/random.php"
+        return {url: "/random.php", filter: "random"}
+    }
+
+    if(ingredientFilter) {
+        return {url: `/filter.php?i=${ingredientFilter}`, filter: "ingredient"}
+    }
+
+    if(alcoholFilter) {
+        return {url:`/filter.php?a=${alcoholFilter}`, filter: alcoholFilter}
     }
 
     if(drinkName.length > 1){
-        searchMethod = `/search.php?s=${drinkName}`
-    } else {
-        searchMethod = `/search.php?f=${drinkName}`
+        return {url: `/search.php?s=${drinkName}`, filter: "name"}
+    } else{
+        return {url: `/search.php?f=${drinkName}`, filter: "name"}
     }
-
-    return searchMethod
-}
-
-function filterDrinks(drinksArr, ingredientFilter) {
-    let newDrinkArr = [];
-    
-    if(ingredientFilter === "" || ingredientFilter == null){
-        return drinksArr;
-    }
-
-    drinksArr.forEach(drink => {
-        drink.ingredients.forEach(ingredient => {
-            let ingredientName = ingredient.name.toLowerCase();
-            if(ingredientName.includes(ingredientFilter)){
-                newDrinkArr.push(drink)
-                return;
-            }
-        });
-    });
-
-    return newDrinkArr;
 }
 
 app.get("/", (req, res) => {
@@ -114,24 +103,21 @@ app.get("/", (req, res) => {
 app.post("/searchDrink", async (req, res) => {
     //Rework with new filters
     const data = req.body;
-    const ingredientFilter = data.ingredient;
     let searchMethod = determineSearchMethod(data);
-
     try{ 
         //Returns an array of drink objects that are poorly formatted
-        const response = await axios.get(`${url}${searchMethod}`);
+        const response = await axios.get(`${url}${searchMethod.url}`);
         let result = response.data.drinks;
+
         if(result == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
         //Drink data is now easier to read and use :D!
         let formattedDrinkData = formatDrinks(result);
-        //Filter through drinks
-        let filteredDrinkData = filterDrinks(formattedDrinkData, ingredientFilter);
+        curDrinkSearchResults = formattedDrinkData;
+        curFilter = searchMethod.filter;
         
-        curDrinkSearchResults = filteredDrinkData;
-        
-        res.render("results.ejs", {drinks: curDrinkSearchResults});
+        res.render("results.ejs", {drinks: curDrinkSearchResults, filter: curFilter});
     } catch(error) {
         res.render("error.ejs", {err: error.message});
     }
@@ -153,21 +139,35 @@ app.post("/searchIngredient", async (req, res) => {
     }
 });
 
-app.post("/drinkInfo", (req, res) => {
+app.post("/drinkInfo", async(req, res) => {
     let drinkId = req.body.id;
 
-    if(drinkId == null && curDrink == null){
-        throw new Error("Error 404 :(")
+    if(drinkId == null && curDrink){
+        drinkId = curDrink.idDrink;
     }
-    curDrinkSearchResults.forEach(drink => {
-        if(drink.idDrink === drinkId){ curDrink = drink; return;}
-    });
-    res.render("drinkInfo.ejs", {drink: curDrink});
+
+    try{ 
+        //Returns an array of drink objects that are poorly formatted
+        const response = await axios.get(`${url}/lookup.php?i=${drinkId}`);
+        let result = response.data.drinks;
+
+        if(result == null) {
+            throw new Error("Sorry, there are no results that match your search :("); 
+        }
+
+        //Drink data is now easier to read and use :D!
+        let formattedDrinkData = formatDrinks(result);
+        curDrink = formattedDrinkData[0];
+        
+        res.render("drinkInfo.ejs", {drink: curDrink});
+    } catch(error) {
+        res.render("error.ejs", {err: error.message});
+    }
     
 });
 
 app.post("/backToDrinks", (req, res) => {
-    res.render("results.ejs", {drinks: curDrinkSearchResults})
+    res.render("results.ejs", {drinks: curDrinkSearchResults, filter: curFilter});
 });
 
 app.post("/backHome", (req, res) => {

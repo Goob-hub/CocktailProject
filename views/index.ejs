@@ -1,16 +1,29 @@
 <%- include("partials/header.ejs") %>
 
-<h1>Here is a title</h1>
+<h1>Cocktail app!</h1>
 
 <form action="/searchDrink" method="post">
-    <input name="drinkName" type="text" placeholder="Search by name or letter" />
-    <input name="ingredient" type="text" placeholder="Has specific ingredient" />
-    <input class="btn" type="submit" value="Discover drinks" />
+    <input name="drinkName" type="text" placeholder="Search by name or letter" required/>
+    <input class="btn btn-primary" type="submit" value="Discover drinks" />
 </form>
 
 <form action="/searchDrink" method="post">
-    <button class="btn" type="submit" name="getRandomDrink" value="true">Click for random drink!</button>
+    <select name="alcohol" id="">
+        <option value="Alcoholic">Alcoholic</option>
+        <option value="Non alcoholic">Non alcoholic</option>
+        <option value="Optional alcohol">Optional alcohol</option>
+    </select>
+    <input class="btn btn-primary" type="submit" value="Discover drinks" />
 </form>
 
-</body>
-</html>
+<form action="/searchDrink" method="post">
+    <input name="ingredient" type="text" placeholder="Search by ingredient" required/>
+    <input class="btn btn-primary" type="submit" value="Discover drinks" />
+</form>
+
+<form action="/searchDrink" method="post">
+    <button class="btn btn-primary" type="submit" name="getRandomDrink" value="true">Click for random drink!</button>
+</form>
+
+
+<%- include("partials/footer.ejs") %>
