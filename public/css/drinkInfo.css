@@ -1,0 +1,65 @@
+@import url("./main.css");
+
+body, #drink-info, header, header div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+header{
+    width: 50%;
+    flex-direction: row;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+#drink-image{
+    width: 50%;
+    max-width: 400px;
+    margin-right: 30px;
+    border-radius: 30px;
+}
+
+#drink-info{
+    text-align: center;
+    color: var(--clr1);
+    width: 100%;
+    min-height: 100vh;
+    padding: 30px;
+    background: linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, .5)), no-repeat url('https://wallpapertag.com/wallpaper/full/2/2/0/129851-bar-background-3000x2000-for-desktop.jpg'); 
+    background-size: cover;
+}
+
+#ingredient-list, .ingredient{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.ingredient{
+    transition: .1s linear;
+    flex-direction: column;
+    text-align: center;
+    height: 300px;
+    width: 250px;
+    margin: 20px;
+    border-radius: 30px;
+    background: rgb(221,33,68);
+    background: -moz-linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
+    background: -webkit-linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
+    background: linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#dd2144",endColorstr="#e2a100",GradientType=1);
+}
+
+.ingredient:hover{
+    transition: .1s linear;
+    border-radius: 30px;
+}
+
+.ingredient-image{
+    margin: 10px;
+}

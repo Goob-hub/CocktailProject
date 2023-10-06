@@ -1,3 +1,10 @@
+:root{
+    --clr1: #F1EFEF;
+    --clr2: #CCC8AA;
+    --clr3: #dd2144;
+    --clr4: #191717;
+}
+
 body{
     min-height: 100vh;
     width: 100%;
@@ -6,4 +13,8 @@ body{
     justify-content: center;
     flex-direction: column;
     text-align: center;
+}
+
+footer{
+    background: none;
 }

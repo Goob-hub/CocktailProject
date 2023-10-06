@@ -1,33 +1,49 @@
 <%- include("partials/header.ejs") %>
 
 <% if(locals.drink) { %>
-    <div class="drink-image" style="background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('<%= drink.strDrinkThumb %>');">
-
-    </div>
-    <div class="drink-info">
-        <div class="info">
-            <h1 id="drink-name"><%= drink.strDrink %></h1>
-            <h2 id="about-drink">
-                <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
-            </h2>
-            <p id="instructions"><%= drink.strInstructions %></p>
-        </div>
+    <!-- style="background: linear-gradient(rgba(0, 0, 0, .8), rgba(0, 0, 0, .8)), no-repeat url('<%= drink.strDrinkThumb %>'); background-size: cover;" -->
+    <section id="drink-info">
+        <header>
+            <img id="drink-image" src="<%= drink.strDrinkThumb %>" alt="">
+            <section>
+                 <div id="basic-info">
+                    <h1><%= drink.strDrink %></h1>
+                    <p>
+                        <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
+                    </p>
+                </div>
+                <div id="instructions">
+                    <h1>How to prepare</h1>
+                    <p><%= drink.strInstructions %></p>
+                </div>
+            </section>
+           
+        </header>
         
-        <ul id="ingredient-list">
+        <h1>Ingredients:</h1>
+        <section id="ingredient-list">
             <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
-                <img id="ingredient-image" src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
-                <li id="ingredient-info"><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
-                <form action="/searchIngredient" method="post">
-                    <button class="btn btn-primary" type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>
-                </form>
+                <div class="ingredient">
+                    <img class="ingredient-image" src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
+                    <p class="ingredientName"><%= ingredient.name %></p>
+                    <p class="ingredientAmount">
+                        <% if(!ingredient.amount) {%>
+                            As much as you want.
+                        <% } else {%>
+                            <%= ingredient.amount %>
+                        <% } %>
+                    </p>
+                    <form action="/searchIngredient" method="post">
+                        <button class="btn btn-dark" type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>
+                    </form>
+                </div>
             <% } %>
-        </ul>
-    </div>
+        </section>
 
-    <form action="/backToDrinks" method="post">
-        <button class="btn btn-primary" type="submit"><</button>
-    </form>
-    
+        <form action="/backToDrinks" method="post">
+            <button class="btn btn-danger" type="submit">Back</button>
+        </form>
+        
+        <%- include("partials/footer.ejs") %>
+    </section>
 <% } %>
-
-<%- include("partials/footer.ejs") %>
