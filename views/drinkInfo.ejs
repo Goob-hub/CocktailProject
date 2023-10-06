@@ -9,6 +9,7 @@
     </p>
     <ul>
         <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
+            <img src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
             <li><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
             <form action="/searchIngredient" method="post">
                 <button type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>

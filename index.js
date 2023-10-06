@@ -13,7 +13,14 @@ let curFilter;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-function cleanObjects(objArr) {
+class Ingredient {
+    constructor(name, amount){
+        this.name = name,
+        this.amount = amount
+    }
+}
+
+function removeNullValues(objArr) {
     objArr.forEach(obj => {
         //Gets rid of all key's that are equal to null
         Object.keys(obj).forEach(key => {
@@ -24,47 +31,45 @@ function cleanObjects(objArr) {
     });    
 }
 
-function formatIngredients(obj) {
-    let ingredientsArray = [];
+function createIngredientList(drink) {
+    let ingredientList = [];
     let i = 1;
 
-    Object.keys(obj).forEach(key => {
+    Object.keys(drink).forEach(key => {
         //Checks if current key is an ingredient
         if(key.includes("strIngredient")){
-            let ingredientData = {name: "", amount: ""};
-
-            ingredientData.name = obj[`strIngredient${i}`];
-            ingredientData.amount = obj[`strMeasure${i}`];
-
-            ingredientsArray.push(ingredientData);
+            let ingredientName = drink[`strIngredient${i}`];
+            let ingredientAmount = drink[`strMeasure${i}`];
+            let ingredient = new Ingredient(ingredientName, ingredientAmount);
+        
+            ingredientList.push(ingredient);
 
             //Deletes old ingredients from drink object
-            delete obj[`strIngredient${i}`];
-            delete obj[`strMeasure${i}`];
+            delete drink[`strIngredient${i}`];
+            delete drink[`strMeasure${i}`];
 
             i++;
         }
     });
-    return ingredientsArray;
+    return ingredientList;
 }
 
 function formatIngredientData(drinksArr){
-    let newDrinksArr = [];
+    let formattedDrinks = [];
 
     drinksArr.forEach(drink => {
-        let newIngredientData = formatIngredients(drink);
-        drink["ingredients"] = newIngredientData;
-
-        newDrinksArr.push(drink);
+        let ingredientList = createIngredientList(drink);
+        drink["ingredients"] = ingredientList;
+        formattedDrinks.push(drink);
     });
 
-    return newDrinksArr;
+    return formattedDrinks;
 }
 
 function formatDrinks(drinksArr) {
     let formattedDrinks;
 
-    cleanObjects(drinksArr);
+    removeNullValues(drinksArr);
 
     formattedDrinks = formatIngredientData(drinksArr);
 
@@ -133,6 +138,7 @@ app.post("/searchIngredient", async (req, res) => {
         if(result == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
+
         res.render("ingredient.ejs", {ingredients: result});  
     } catch(error) {
         res.render("error.ejs", {err: error.message});
@@ -156,7 +162,7 @@ app.post("/drinkInfo", async(req, res) => {
         }
 
         //Drink data is now easier to read and use :D!
-        let formattedDrinkData = formatDrinks(result);
+        let formattedDrinkData = formatDrinks(result); 
         curDrink = formattedDrinkData[0];
         
         res.render("drinkInfo.ejs", {drink: curDrink});

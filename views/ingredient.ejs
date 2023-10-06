@@ -2,6 +2,7 @@
 
 <% if(locals.ingredients) { %>
     <% for (let i = 0; i < ingredients.length; i++) { const ingredient = ingredients[i]; %>
+        <img src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.strIngredient %>-Small.png" alt="">
         <h1><%= ingredient.strIngredient %></h1>
         <p>Type: <%= ingredient.strType %></p>
         <p>Alcoholic: <%= ingredient.strAlcohol %></p>
