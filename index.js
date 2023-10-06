@@ -6,9 +6,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const url = "https://www.thecocktaildb.com/api/json/v1/1";
 
-let curDrinkSearchResults;
+let curSearchResults;
 let curDrink;
 let curFilter;
+let staticFileNames = {
+    homePage: "index",
+    searchResults: "results",
+    drinkInfo: "drinkInfo",
+    ingredientInfo: "ingredient",
+    errorPage: "error"
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -102,46 +109,59 @@ function determineSearchMethod(data) {
 }
 
 app.get("/", (req, res) => {
-    res.render("index.ejs")
+    res.render(`${staticFileNames.homePage}.ejs`);
 });
 
 app.post("/searchDrink", async (req, res) => {
-    //Rework with new filters
-    const data = req.body;
-    let searchMethod = determineSearchMethod(data);
+    const userSearch = req.body;
+    let searchMethod = determineSearchMethod(userSearch);
     try{ 
         //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}${searchMethod.url}`);
-        let result = response.data.drinks;
+        let drinkData = response.data.drinks;
 
-        if(result == null) {
+        if(drinkData == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
         //Drink data is now easier to read and use :D!
-        let formattedDrinkData = formatDrinks(result);
-        curDrinkSearchResults = formattedDrinkData;
+        let formattedDrinkData = formatDrinks(drinkData);
+
+        curSearchResults = formattedDrinkData;
         curFilter = searchMethod.filter;
         
-        res.render("results.ejs", {drinks: curDrinkSearchResults, filter: curFilter});
+        res.render(`${staticFileNames.searchResults}.ejs`, {
+            drinks: curSearchResults, 
+            filter: curFilter, 
+            curPage: staticFileNames.searchResults
+        });
     } catch(error) {
-        res.render("error.ejs", {err: error.message});
+        res.render(`${staticFileNames.errorPage}.ejs`, {
+            err: error.message, 
+            curPage: staticFileNames.errorPage
+        });
     }
 });
 
 app.post("/searchIngredient", async (req, res) => {
-    const ingredient = req.body.ingredient;
+    const ingredientSearch = req.body.ingredient;
     try{
         //Returns the entire lore of a specific ingredient 
-        const response = await axios.get(`${url}/search.php?i=${ingredient}`);
-        const result = response.data.ingredients;
+        const response = await axios.get(`${url}/search.php?i=${ingredientSearch}`);
+        const ingredientInfo = response.data.ingredients;
         
-        if(result == null) {
-            throw new Error("Sorry, there are no results that match your search :("); 
+        if(ingredientInfo == null) {
+            throw new Error("Sorry, there are no ingredients that match your search :("); 
         }
 
-        res.render("ingredient.ejs", {ingredients: result});  
+        res.render(`${staticFileNames.ingredientInfo}.ejs`, {
+            ingredients: ingredientInfo, 
+            curPage: staticFileNames.ingredientInfo
+        });  
     } catch(error) {
-        res.render("error.ejs", {err: error.message});
+        res.render(`${staticFileNames.errorPage}.ejs`, {
+            err: error.message, 
+            curPage: staticFileNames.errorPage
+        });
     }
 });
 
@@ -155,29 +175,39 @@ app.post("/drinkInfo", async(req, res) => {
     try{ 
         //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}/lookup.php?i=${drinkId}`);
-        let result = response.data.drinks;
+        let drinkData = response.data.drinks;
 
-        if(result == null) {
-            throw new Error("Sorry, there are no results that match your search :("); 
+        if(drinkData == null) {
+            throw new Error("Sorry, there was an error trying to get info on that drink :("); 
         }
 
         //Drink data is now easier to read and use :D!
-        let formattedDrinkData = formatDrinks(result); 
+        let formattedDrinkData = formatDrinks(drinkData); 
         curDrink = formattedDrinkData[0];
         
-        res.render("drinkInfo.ejs", {drink: curDrink});
+        res.render(`${staticFileNames.drinkInfo}.ejs`, {
+            drink: curDrink, 
+            curPage: staticFileNames.drinkInfo
+        });
     } catch(error) {
-        res.render("error.ejs", {err: error.message});
+        res.render(`${staticFileNames.errorPage}.ejs`, {
+            err: error.message, 
+            curPage: staticFileNames.errorPage
+        });
     }
     
 });
 
 app.post("/backToDrinks", (req, res) => {
-    res.render("results.ejs", {drinks: curDrinkSearchResults, filter: curFilter});
+    res.render(`${staticFileNames.searchResults}.ejs`, {
+        drinks: curSearchResults, 
+        filter: curFilter, 
+        curPage: staticFileNames.searchResults
+    });
 });
 
 app.post("/backHome", (req, res) => {
-    res.render("index.ejs");
+    res.render(`${staticFileNames.homePage}.ejs`);
 });
 
 app.listen(PORT, () => {

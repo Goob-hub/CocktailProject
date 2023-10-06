@@ -1,26 +1,33 @@
 <%- include("partials/header.ejs") %>
 
-<h1>Drink info</h1>
-
 <% if(locals.drink) { %>
-    <h1><%= drink.strDrink %></h1>
-    <p>
-        <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
-    </p>
-    <ul>
-        <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
-            <img src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
-            <li><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
-            <form action="/searchIngredient" method="post">
-                <button type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>
-            </form>
-        <% } %>
-    </ul>
-    <p><%= drink.strInstructions %></p>
-<% } %>
+    <div class="drink-image" style="background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('<%= drink.strDrinkThumb %>');">
 
-<form action="/backToDrinks" method="post">
-    <button class="btn" type="submit">Back</button>
-</form>
+    </div>
+    <div class="drink-info">
+        <div class="info">
+            <h1 id="drink-name"><%= drink.strDrink %></h1>
+            <h2 id="about-drink">
+                <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
+            </h2>
+            <p id="instructions"><%= drink.strInstructions %></p>
+        </div>
+        
+        <ul id="ingredient-list">
+            <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
+                <img id="ingredient-image" src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
+                <li id="ingredient-info"><p><%= ingredient.name %>: <%= ingredient.amount %></p></li>
+                <form action="/searchIngredient" method="post">
+                    <button class="btn btn-primary" type="submit" value="<%= ingredient.name %>" name="ingredient">More info</button>
+                </form>
+            <% } %>
+        </ul>
+    </div>
+
+    <form action="/backToDrinks" method="post">
+        <button class="btn btn-primary" type="submit"><</button>
+    </form>
+    
+<% } %>
 
 <%- include("partials/footer.ejs") %>
