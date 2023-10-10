@@ -15,6 +15,10 @@ header{
     margin-bottom: 20px;
 }
 
+p{
+    font-size: 18px;
+}
+
 #drink-image{
     width: 50%;
     max-width: 400px;
@@ -28,7 +32,7 @@ header{
     width: 100%;
     min-height: 100vh;
     padding: 30px;
-    background: linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, .5)), no-repeat url('https://wallpapertag.com/wallpaper/full/2/2/0/129851-bar-background-3000x2000-for-desktop.jpg'); 
+    background: linear-gradient(rgba(0, 0, 0, .8), rgba(0, 0, 0, .8)), no-repeat url('../images/drinkInfoBg.jpg'); 
     background-size: cover;
 }
 
@@ -38,6 +42,7 @@ header{
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    max-width: 100%;
 }
 
 .ingredient{
@@ -62,4 +67,21 @@ header{
 
 .ingredient-image{
     margin: 10px;
+}
+
+@media(min-width: 280px) and (max-width: 600px){
+    header{
+        width: 100%;
+        flex-direction: column;
+    }
+
+    p{
+        max-width: 200px;
+        
+    }
+
+    #drink-image{
+        width: 100%;
+        margin: 0px 0px 1em 0px;
+    }
 }

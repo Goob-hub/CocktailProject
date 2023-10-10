@@ -88,24 +88,30 @@ function determineSearchMethod(data) {
     const ingredientFilter = data.ingredient;
     const alcoholFilter = data.alcohol;
     const getRandomDrink = data.getRandomDrink;
+    let searchMethod;
 
-    if(getRandomDrink){
-        return {url: "/random.php", filter: "random"}
-    }
+    switch (true) {
+        case getRandomDrink !== undefined:
+            searchMethod = {url: "/random.php", filter: "random"}
+            break;
 
-    if(ingredientFilter) {
-        return {url: `/filter.php?i=${ingredientFilter}`, filter: "ingredient"}
-    }
+        case ingredientFilter !== undefined:
+            searchMethod = {url: `/filter.php?i=${ingredientFilter}`, filter: "ingredient"}
+            break;
 
-    if(alcoholFilter) {
-        return {url:`/filter.php?a=${alcoholFilter}`, filter: alcoholFilter}
-    }
+        case alcoholFilter !== undefined:
+            searchMethod = {url:`/filter.php?a=${alcoholFilter}`, filter: alcoholFilter}
+            break;
 
-    if(drinkName.length > 1){
-        return {url: `/search.php?s=${drinkName}`, filter: "name"}
-    } else{
-        return {url: `/search.php?f=${drinkName}`, filter: "name"}
+        case drinkName.length > 1:
+            searchMethod = {url: `/search.php?s=${drinkName}`, filter: "name"}
+            break;
+
+        default:
+            searchMethod = {url: `/search.php?f=${drinkName}`, filter: "name"}
+            break;
     }
+    return searchMethod;
 }
 
 app.get("/", (req, res) => {
@@ -116,14 +122,13 @@ app.post("/searchDrink", async (req, res) => {
     const userSearch = req.body;
     let searchMethod = determineSearchMethod(userSearch);
     try{ 
-        //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}${searchMethod.url}`);
         let drinkData = response.data.drinks;
 
         if(drinkData == null) {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
-        //Drink data is now easier to read and use :D!
+
         let formattedDrinkData = formatDrinks(drinkData);
 
         curSearchResults = formattedDrinkData;
@@ -145,7 +150,6 @@ app.post("/searchDrink", async (req, res) => {
 app.post("/searchIngredient", async (req, res) => {
     const ingredientSearch = req.body.ingredient;
     try{
-        //Returns the entire lore of a specific ingredient 
         const response = await axios.get(`${url}/search.php?i=${ingredientSearch}`);
         const ingredientInfo = response.data.ingredients;
         
@@ -173,7 +177,6 @@ app.post("/drinkInfo", async(req, res) => {
     }
 
     try{ 
-        //Returns an array of drink objects that are poorly formatted
         const response = await axios.get(`${url}/lookup.php?i=${drinkId}`);
         let drinkData = response.data.drinks;
 
@@ -181,7 +184,6 @@ app.post("/drinkInfo", async(req, res) => {
             throw new Error("Sorry, there was an error trying to get info on that drink :("); 
         }
 
-        //Drink data is now easier to read and use :D!
         let formattedDrinkData = formatDrinks(drinkData); 
         curDrink = formattedDrinkData[0];
         
