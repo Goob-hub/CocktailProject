@@ -5,10 +5,13 @@ import bodyParser from "body-parser";
 const app = express();
 const PORT = process.env.PORT || 3000;
 const url = "https://www.thecocktaildb.com/api/json/v1/1";
+const itemsPerPage = 8;
 
-let curSearchResults;
+let curPage = 1;
+let curSearchResults = [];
 let curDrink;
 let curFilter;
+
 let staticFileNames = {
     homePage: "index",
     searchResults: "results",
@@ -17,15 +20,15 @@ let staticFileNames = {
     errorPage: "error"
 }
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
 class Ingredient {
     constructor(name, amount){
         this.name = name,
         this.amount = amount
     }
 }
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 function removeNullValues(objArr) {
     objArr.forEach(obj => {
@@ -114,6 +117,41 @@ function determineSearchMethod(data) {
     return searchMethod;
 }
 
+function getCurPageOfDrinks() {
+    let totalPages = Math.round(curSearchResults.length / itemsPerPage);
+    let startIndex;
+    let endIndex;
+
+    switch (true) {
+        case totalPages < 1:
+            totalPages = 1;
+            curPage = 1;
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+        
+        case curPage >= totalPages:
+            curPage = totalPages;
+            endIndex = curPage * itemsPerPage;
+            startIndex = endIndex - itemsPerPage;
+            return curSearchResults.slice(startIndex, endIndex);
+            break;
+
+        case curPage < 1:
+            curPage = 1;
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+        
+        case curPage < totalPages && curPage >= 1:
+            endIndex = curPage * itemsPerPage;
+            startIndex = endIndex - itemsPerPage;
+            return curSearchResults.slice(startIndex, endIndex);
+            break;
+        default:
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+    }
+}
+
 app.get("/", (req, res) => {
     res.render(`${staticFileNames.homePage}.ejs`);
 });
@@ -133,18 +171,40 @@ app.post("/searchDrink", async (req, res) => {
 
         curSearchResults = formattedDrinkData;
         curFilter = searchMethod.filter;
-        
+
         res.render(`${staticFileNames.searchResults}.ejs`, {
-            drinks: curSearchResults, 
-            filter: curFilter, 
-            curPage: staticFileNames.searchResults
+            drinks: curSearchResults.slice(0, itemsPerPage), 
+            curWebPage: staticFileNames.searchResults,
+            curPage: curPage
         });
     } catch(error) {
         res.render(`${staticFileNames.errorPage}.ejs`, {
             err: error.message, 
-            curPage: staticFileNames.errorPage
+            curWebPage: staticFileNames.errorPage
         });
     }
+});
+
+app.post("/nextPage", (req, res) => {
+    curPage++;
+    let drinksOnPage = getCurPageOfDrinks();
+
+    res.render(`${staticFileNames.searchResults}.ejs`, {
+        drinks: drinksOnPage,
+        curWebPage: staticFileNames.searchResults,
+        curPage: curPage
+    });
+});
+
+app.post("/prevPage", async (req, res) => {
+    curPage--;
+    let drinksOnPage = getCurPageOfDrinks();
+
+    res.render(`${staticFileNames.searchResults}.ejs`, {
+        drinks: drinksOnPage,
+        curWebPage: staticFileNames.searchResults,
+        curPage: curPage
+    });
 });
 
 app.post("/searchIngredient", async (req, res) => {

@@ -1,5 +1,23 @@
 <%- include("partials/header.ejs") %>
 
+<section id="page-btns">
+    <form action="/nextPage" method="post">
+        <button class="btn btn-primary" type="submit" name="value" value="next">Next</button>
+    </form>
+
+    <h1>Current page: <%= curPage %></h1>
+    
+    <form action="/prevPage" method="post">
+        <button class="btn btn-primary" type="submit" name="value" value="prev">Prev</button>
+    </form>
+</section>
+
+
+<form action="/backHome" method="post">
+    <button class="btn btn-primary" type="submit">Home</button>
+</form>
+    
+
 <div class="drinks-container">
     <% if(locals.drinks) { %>
         <% for (let i = 0; i < drinks.length; i++) { const drink = drinks[i];%>
@@ -14,9 +32,4 @@
         <% } %>
     <% } %>
 </div>
-
-<form action="/backHome" method="post">
-    <button class="btn btn-primary" type="submit">Back</button>
-</form>
-    
 <%- include("partials/footer.ejs") %>
