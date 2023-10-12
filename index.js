@@ -219,12 +219,12 @@ app.post("/searchIngredient", async (req, res) => {
 
         res.render(`${staticFileNames.ingredientInfo}.ejs`, {
             ingredients: ingredientInfo, 
-            curPage: staticFileNames.ingredientInfo
+            curWebPage: staticFileNames.ingredientInfo
         });  
     } catch(error) {
         res.render(`${staticFileNames.errorPage}.ejs`, {
             err: error.message, 
-            curPage: staticFileNames.errorPage
+            curWebPage: staticFileNames.errorPage
         });
     }
 });
@@ -249,12 +249,12 @@ app.post("/drinkInfo", async(req, res) => {
         
         res.render(`${staticFileNames.drinkInfo}.ejs`, {
             drink: curDrink, 
-            curPage: staticFileNames.drinkInfo
+            curWebPage: staticFileNames.drinkInfo
         });
     } catch(error) {
         res.render(`${staticFileNames.errorPage}.ejs`, {
             err: error.message, 
-            curPage: staticFileNames.errorPage
+            curWebPage: staticFileNames.errorPage
         });
     }
     
@@ -264,7 +264,7 @@ app.post("/backToDrinks", (req, res) => {
     res.render(`${staticFileNames.searchResults}.ejs`, {
         drinks: curSearchResults, 
         filter: curFilter, 
-        curPage: staticFileNames.searchResults
+        curWebPage: staticFileNames.searchResults
     });
 });
 

@@ -1,27 +1,25 @@
 <%- include("partials/header.ejs") %>
 
-<section id="page-btns">
-    <form action="/nextPage" method="post">
-        <button class="btn btn-primary" type="submit" name="value" value="next">Next</button>
-    </form>
+<% if(locals.curPage){ %>
+    <section id="page-btns">
+        <h1>Current page: <%= curPage %></h1>
 
-    <h1>Current page: <%= curPage %></h1>
-    
-    <form action="/prevPage" method="post">
-        <button class="btn btn-primary" type="submit" name="value" value="prev">Prev</button>
-    </form>
-</section>
-
-
-<form action="/backHome" method="post">
-    <button class="btn btn-primary" type="submit">Home</button>
-</form>
-    
+        <div id="button-container">
+            <form action="/prevPage" method="post">
+                <button class="btn btn-primary" type="submit" name="value" value="prev">Prev</button>
+            </form>
+            
+            <form action="/nextPage" method="post">
+                <button class="btn btn-primary" type="submit" name="value" value="next">Next</button>
+            </form>
+        </div>
+    </section>
+<% } %>
 
 <div class="drinks-container">
     <% if(locals.drinks) { %>
         <% for (let i = 0; i < drinks.length; i++) { const drink = drinks[i];%>
-            <div class="drink" style="background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('<%= drink.strDrinkThumb %>');">
+            <div class="drink" style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('<%= drink.strDrinkThumb %>');">
                 <div class="info-container">
                     <h1><%= drink.strDrink %></h1>
                     <form action="/drinkInfo" method="post">
