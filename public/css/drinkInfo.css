@@ -15,8 +15,8 @@ header{
     margin-bottom: 20px;
 }
 
-p{
-    font-size: 18px;
+header p {
+    margin-top: 10px;
 }
 
 #drink-image{
@@ -28,12 +28,9 @@ p{
 
 #drink-info{
     text-align: center;
-    color: var(--clr1);
     width: 100%;
     min-height: 100vh;
     padding: 30px;
-    background: linear-gradient(rgba(0, 0, 0, .8), rgba(0, 0, 0, .8)), no-repeat url('../images/drinkInfoBg.jpg'); 
-    background-size: cover;
 }
 
 #ingredient-list, .ingredient{
@@ -52,11 +49,12 @@ p{
     height: 300px;
     width: 250px;
     margin: 20px;
+    color: var(--clr1);
     border-radius: 30px;
-    background: rgb(221,33,68);
-    background: -moz-linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
-    background: -webkit-linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
-    background: linear-gradient(126deg, rgba(221,33,68,1) 20%, rgba(226,161,0,1) 70%);
+    background: rgb(42, 33, 221);
+    background: -moz-linear-gradient(126deg, rgb(42, 33, 221) 20%, rgb(0, 147, 226) 70%);
+    background: -webkit-linear-gradient(126deg, rgb(42, 33, 221) 20%, rgb(0, 147, 226) 70%);
+    background: linear-gradient(126deg, rgb(42, 33, 221) 20%, rgb(0, 147, 226) 70%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#dd2144",endColorstr="#e2a100",GradientType=1);
 }
 
@@ -75,11 +73,7 @@ p{
         flex-direction: column;
     }
 
-    p{
-        max-width: 200px;
-        
-    }
-
+    
     #drink-image{
         width: 100%;
         margin: 0px 0px 1em 0px;

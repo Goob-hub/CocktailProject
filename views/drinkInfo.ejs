@@ -6,25 +6,24 @@
             <img id="drink-image" src="<%= drink.strDrinkThumb %>" alt="">
             <section>
                  <div id="basic-info">
-                    <h1><%= drink.strDrink %></h1>
-                    <p>
+                    <h1 class="h1 border-bottom border-primary pb-2"><%= drink.strDrink %></h1>
+                    <p class="fs-5">
                         <%= drink.strDrink %> is an <%= drink.strAlcoholic %> <%= drink.strCategory %> that is served in a <%= drink.strGlass %>.
                     </p>
                 </div>
                 <div id="instructions">
-                    <h1>How to prepare</h1>
-                    <p><%= drink.strInstructions %></p>
+                    <h1 class="h1 border-bottom border-primary pb-2">How to prepare</h1>
+                    <p class="fs-5"><%= drink.strInstructions %></p>
                 </div>
             </section>
-           
         </header>
         
-        <h1>Ingredients:</h1>
+        <h1 class="h1 border-bottom border-primary pb-2">Ingredients:</h1>
         <section id="ingredient-list">
             <% for (let i = 0; i < drink.ingredients.length; i++) { const ingredient = drink.ingredients[i];%>
                 <div class="ingredient">
                     <img class="ingredient-image" src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.name %>-Small.png" alt="">
-                    <p class="ingredientName"><%= ingredient.name %></p>
+                    <p class="ingredientName h3 border-bottom pb-2"><%= ingredient.name %></p>
                     <p class="ingredientAmount">
                         <% if(!ingredient.amount) {%>
                             As much as you want.
@@ -40,7 +39,7 @@
         </section>
         
         <form action="/backToDrinks" method="post">
-            <button class="btn btn-danger" type="submit">Back</button>
+            <button class="btn btn-primary" type="submit">Back</button>
         </form>
 
         <%- include("partials/footer.ejs") %>

@@ -24,6 +24,7 @@
 }
 
 .info-container h1{
+    text-align: left;
     margin-bottom: 15px;
     color: whitesmoke;
 }

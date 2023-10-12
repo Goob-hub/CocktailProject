@@ -211,14 +211,14 @@ app.post("/searchIngredient", async (req, res) => {
     const ingredientSearch = req.body.ingredient;
     try{
         const response = await axios.get(`${url}/search.php?i=${ingredientSearch}`);
-        const ingredientInfo = response.data.ingredients;
+        const ingredientInfo = response.data.ingredients[0];
         
         if(ingredientInfo == null) {
             throw new Error("Sorry, there are no ingredients that match your search :("); 
         }
 
         res.render(`${staticFileNames.ingredientInfo}.ejs`, {
-            ingredients: ingredientInfo, 
+            ingredient: ingredientInfo, 
             curWebPage: staticFileNames.ingredientInfo
         });  
     } catch(error) {
@@ -261,9 +261,11 @@ app.post("/drinkInfo", async(req, res) => {
 });
 
 app.post("/backToDrinks", (req, res) => {
+    let drinksOnPage = getCurPageOfDrinks();
     res.render(`${staticFileNames.searchResults}.ejs`, {
-        drinks: curSearchResults, 
+        drinks: drinksOnPage, 
         filter: curFilter, 
+        curPage: curPage,
         curWebPage: staticFileNames.searchResults
     });
 });
