@@ -1,3 +1,22 @@
-.description{
-    text-indent: initial;
+main, #head, #about{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
+main{
+    width: 100%;
+    height: 100%;
+}
+
+h1{
+    width: fit-content;
+}
+
+.description{
+    padding: 0px 20px 20px 20px;
+    max-width: 500px;
+    display: block;
+}
+

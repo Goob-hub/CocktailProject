@@ -30,128 +30,6 @@ class Ingredient {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-function removeNullValues(objArr) {
-    objArr.forEach(obj => {
-        //Gets rid of all key's that are equal to null
-        Object.keys(obj).forEach(key => {
-            if(obj[key] == null) {
-                delete obj[key];
-            }
-        });
-    });    
-}
-
-function createIngredientList(drink) {
-    let ingredientList = [];
-    let i = 1;
-
-    Object.keys(drink).forEach(key => {
-        //Checks if current key is an ingredient
-        if(key.includes("strIngredient")){
-            let ingredientName = drink[`strIngredient${i}`];
-            let ingredientAmount = drink[`strMeasure${i}`];
-            let ingredient = new Ingredient(ingredientName, ingredientAmount);
-        
-            ingredientList.push(ingredient);
-
-            //Deletes old ingredients from drink object
-            delete drink[`strIngredient${i}`];
-            delete drink[`strMeasure${i}`];
-
-            i++;
-        }
-    });
-    return ingredientList;
-}
-
-function formatIngredientData(drinksArr){
-    let formattedDrinks = [];
-
-    drinksArr.forEach(drink => {
-        let ingredientList = createIngredientList(drink);
-        drink["ingredients"] = ingredientList;
-        formattedDrinks.push(drink);
-    });
-
-    return formattedDrinks;
-}
-
-function formatDrinks(drinksArr) {
-    let formattedDrinks;
-
-    removeNullValues(drinksArr);
-
-    formattedDrinks = formatIngredientData(drinksArr);
-
-    return formattedDrinks;
-}
-
-function determineSearchMethod(data) {
-    const drinkName = data.drinkName;
-    const ingredientFilter = data.ingredient;
-    const alcoholFilter = data.alcohol;
-    const getRandomDrink = data.getRandomDrink;
-    let searchMethod;
-
-    switch (true) {
-        case getRandomDrink !== undefined:
-            searchMethod = {url: "/random.php", filter: "random"}
-            break;
-
-        case ingredientFilter !== undefined:
-            searchMethod = {url: `/filter.php?i=${ingredientFilter}`, filter: "ingredient"}
-            break;
-
-        case alcoholFilter !== undefined:
-            searchMethod = {url:`/filter.php?a=${alcoholFilter}`, filter: alcoholFilter}
-            break;
-
-        case drinkName.length > 1:
-            searchMethod = {url: `/search.php?s=${drinkName}`, filter: "name"}
-            break;
-
-        default:
-            searchMethod = {url: `/search.php?f=${drinkName}`, filter: "name"}
-            break;
-    }
-    return searchMethod;
-}
-
-function getCurPageOfDrinks() {
-    let totalPages = Math.round(curSearchResults.length / itemsPerPage);
-    let startIndex;
-    let endIndex;
-
-    switch (true) {
-        case totalPages < 1:
-            totalPages = 1;
-            curPage = 1;
-            return curSearchResults.slice(0, itemsPerPage);
-            break;
-        
-        case curPage >= totalPages:
-            curPage = totalPages;
-            endIndex = curPage * itemsPerPage;
-            startIndex = endIndex - itemsPerPage;
-            return curSearchResults.slice(startIndex, endIndex);
-            break;
-
-        case curPage < 1:
-            curPage = 1;
-            return curSearchResults.slice(0, itemsPerPage);
-            break;
-        
-        case curPage < totalPages && curPage >= 1:
-            endIndex = curPage * itemsPerPage;
-            startIndex = endIndex - itemsPerPage;
-            return curSearchResults.slice(startIndex, endIndex);
-            break;
-        default:
-            return curSearchResults.slice(0, itemsPerPage);
-            break;
-    }
-}
-
 app.get("/", (req, res) => {
     res.render(`${staticFileNames.homePage}.ejs`);
 });
@@ -277,3 +155,125 @@ app.post("/backHome", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
 });
+
+function removeNullValues(objArr) {
+    objArr.forEach(obj => {
+        //Gets rid of all key's that are equal to null
+        Object.keys(obj).forEach(key => {
+            if(obj[key] == null) {
+                delete obj[key];
+            }
+        });
+    });    
+}
+
+function createIngredientList(drink) {
+    let ingredientList = [];
+    let i = 1;
+
+    Object.keys(drink).forEach(key => {
+        //Checks if current key is an ingredient
+        if(key.includes("strIngredient")){
+            let ingredientName = drink[`strIngredient${i}`];
+            let ingredientAmount = drink[`strMeasure${i}`];
+            let ingredient = new Ingredient(ingredientName, ingredientAmount);
+        
+            ingredientList.push(ingredient);
+
+            //Deletes old ingredients from drink object
+            delete drink[`strIngredient${i}`];
+            delete drink[`strMeasure${i}`];
+
+            i++;
+        }
+    });
+    return ingredientList;
+}
+
+function formatIngredientData(drinksArr){
+    let formattedDrinks = [];
+
+    drinksArr.forEach(drink => {
+        let ingredientList = createIngredientList(drink);
+        drink["ingredients"] = ingredientList;
+        formattedDrinks.push(drink);
+    });
+
+    return formattedDrinks;
+}
+
+function formatDrinks(drinksArr) {
+    let formattedDrinks;
+
+    removeNullValues(drinksArr);
+
+    formattedDrinks = formatIngredientData(drinksArr);
+
+    return formattedDrinks;
+}
+
+function determineSearchMethod(data) {
+    const drinkName = data.drinkName;
+    const ingredientFilter = data.ingredient;
+    const alcoholFilter = data.alcohol;
+    const getRandomDrink = data.getRandomDrink;
+    let searchMethod;
+
+    switch (true) {
+        case getRandomDrink !== undefined:
+            searchMethod = {url: "/random.php", filter: "random"}
+            break;
+
+        case ingredientFilter !== undefined:
+            searchMethod = {url: `/filter.php?i=${ingredientFilter}`, filter: "ingredient"}
+            break;
+
+        case alcoholFilter !== undefined:
+            searchMethod = {url:`/filter.php?a=${alcoholFilter}`, filter: alcoholFilter}
+            break;
+
+        case drinkName.length > 1:
+            searchMethod = {url: `/search.php?s=${drinkName}`, filter: "name"}
+            break;
+
+        default:
+            searchMethod = {url: `/search.php?f=${drinkName}`, filter: "name"}
+            break;
+    }
+    return searchMethod;
+}
+
+function getCurPageOfDrinks() {
+    let totalPages = Math.round(curSearchResults.length / itemsPerPage);
+    let startIndex;
+    let endIndex;
+
+    switch (true) {
+        case totalPages < 1:
+            totalPages = 1;
+            curPage = 1;
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+        
+        case curPage >= totalPages:
+            curPage = totalPages;
+            endIndex = curPage * itemsPerPage;
+            startIndex = endIndex - itemsPerPage;
+            return curSearchResults.slice(startIndex, endIndex);
+            break;
+
+        case curPage < 1:
+            curPage = 1;
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+        
+        case curPage < totalPages && curPage >= 1:
+            endIndex = curPage * itemsPerPage;
+            startIndex = endIndex - itemsPerPage;
+            return curSearchResults.slice(startIndex, endIndex);
+            break;
+        default:
+            return curSearchResults.slice(0, itemsPerPage);
+            break;
+    }
+}
