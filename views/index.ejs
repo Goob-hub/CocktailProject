@@ -1,29 +1,38 @@
 <%- include("partials/header.ejs") %>
 
-<h1>Cocktail app!</h1>
-
-<form action="/searchDrink" method="post">
-    <input name="drinkName" type="text" placeholder="Search by name or letter" required/>
-    <input class="btn btn-primary" type="submit" value="Discover drinks" />
-</form>
-
-<form action="/searchDrink" method="post">
-    <select name="alcohol" id="">
-        <option value="Alcoholic">Alcoholic</option>
-        <option value="Non alcoholic">Non alcoholic</option>
-        <option value="Optional alcohol">Optional alcohol</option>
-    </select>
-    <input class="btn btn-primary" type="submit" value="Discover drinks" />
-</form>
-
-<form action="/searchDrink" method="post">
-    <input name="ingredient" type="text" placeholder="Search by ingredient" required/>
-    <input class="btn btn-primary" type="submit" value="Discover drinks" />
-</form>
-
-<form action="/searchDrink" method="post">
-    <button class="btn btn-primary" type="submit" name="getRandomDrink" value="true">Click for random drink!</button>
-</form>
-
+<div class="container col-xl-10 col-xxl-8 px-4 pt-5">
+    <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-lg-7 text-center">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Cocktail app</h1>
+            <p class="fs-4">Search far and wide for the perfect concoction of alcohol or flavor to tailor to your needs and quench thy thirst.</p>
+            <img class="index-img mb-5" src="images/Cocktails.jpg" alt="">
+        </div>
+        <div class="col-md-10 mx-auto col-lg-5">
+            <section id="search">
+                <form class="form-fill p-4 border border rounded-3 bg-body-tertiary" action="/searchDrink" method="post">
+                    <input class="form-control" name="drinkName" type="text" placeholder="Search by name or letter" required/>
+                    <input class="btn btn-primary mt-4" type="submit" value="Discover drinks" />
+                </form>
+                
+                <form class="form-fill p-4 border border rounded-3 bg-body-tertiary" action="/searchDrink" method="post">
+                    <input class="form-control" name="ingredient" type="text" placeholder="Search by ingredient" required/>
+                    <input class="btn btn-primary mt-4" type="submit" value="Discover drinks" />
+                </form>
+                <form class="form-fill p-4 border border rounded-3 bg-body-tertiary" action="/searchDrink" method="post">
+                    <select class="form-select" name="alcohol" id="">
+                        <option value="Alcoholic">Alcoholic</option>
+                        <option value="Non alcoholic">Non alcoholic</option>
+                        <option value="Optional alcohol">Optional alcohol</option>
+                    </select>
+                    <input class="btn btn-primary mt-4" type="submit" value="Discover drinks" />
+                </form>
+                
+                <form action="/searchDrink" method="post">
+                    <button class="btn btn-primary mt-4" type="submit" name="getRandomDrink" value="true">Click for random drink!</button>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
 
 <%- include("partials/footer.ejs") %>

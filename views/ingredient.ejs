@@ -3,19 +3,18 @@
 <% if(locals.ingredient) { %>
   <main>
     <section id="head">
-      <img src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.strIngredient %>-Medium.png" alt="">
+      <img class="mt-4" src="https://www.thecocktaildb.com/images/ingredients/<%= ingredient.strIngredient %>-Medium.png" alt="">
       <div id="basic-info">
         <h1 class="h1 border-bottom border-primary pb-2 mb-4"><%= ingredient.strIngredient %></h1>
-        <p class="fs-5"><span class="h1 fs-5">Type:</span> <%= ingredient.strType %></p>
+        <p class="fs-5"><span class="h1 fs-5">Type:</span> <%= ingredient.strType || "None" %></p>
         <p class="fs-5"><span class="h1 fs-5">Alcoholic:</span> <%= ingredient.strAlcohol %></p>
       </div>
     </section>
   
     <% if(ingredient.strDescription !== "") {  %>  
       <section id="about">
-        <h1 class="h1 border-bottom border-primary mt-4">About this ingredient:</h1>
+        <h1 class="h1 border-bottom border-primary mt-4 mb-3">About this ingredient:</h1>
         <div class="description">
-          
           <%= ingredient.strDescription %>
         </div> 
       </section>

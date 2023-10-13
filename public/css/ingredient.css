@@ -1,4 +1,4 @@
-main, #head, #about{
+main, #head, #about, #basic-info{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,4 +19,5 @@ h1{
     max-width: 500px;
     display: block;
 }
+
 

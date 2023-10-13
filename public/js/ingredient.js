@@ -1,7 +1,11 @@
 let text = document.querySelector(".description").textContent;
 let formattedText = formatText(text);
 
-document.querySelector(".description").innerHTML = formattedText
+if(formattedText.length > 0){
+    document.querySelector(".description").innerHTML = formattedText;
+} else {
+    document.querySelector("#about").innerHTML = "";
+}
 
 function formatText(text){
     let splitTxt = text.split("\n");

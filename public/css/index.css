@@ -1,0 +1,23 @@
+#other-search, #search{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-fill{
+    width: 100%;
+    max-width: 400px;
+}
+
+.index-img{
+    border-radius: 20px;
+    width: 300px;
+}
+
+
+@media (min-width: 990px) {
+    .index-img{
+        width: 100%;
+    }
+}

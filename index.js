@@ -31,12 +31,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-    res.render(`${staticFileNames.homePage}.ejs`);
+    res.render(`${staticFileNames.homePage}.ejs`, {curWebPage: staticFileNames.homePage});
 });
 
 app.post("/searchDrink", async (req, res) => {
     const userSearch = req.body;
     let searchMethod = determineSearchMethod(userSearch);
+    curPage = 1;
     try{ 
         const response = await axios.get(`${url}${searchMethod.url}`);
         let drinkData = response.data.drinks;
@@ -149,7 +150,7 @@ app.post("/backToDrinks", (req, res) => {
 });
 
 app.post("/backHome", (req, res) => {
-    res.render(`${staticFileNames.homePage}.ejs`);
+    res.render(`${staticFileNames.homePage}.ejs`, {curWebPage: staticFileNames.homePage});
 });
 
 app.listen(PORT, () => {
