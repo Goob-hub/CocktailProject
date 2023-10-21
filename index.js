@@ -46,7 +46,7 @@ app.post("/searchDrink", async (req, res) => {
             throw new Error("Sorry, there are no results that match your search :("); 
         }
 
-        let formattedDrinkData = formatDrinks(drinkData);
+        let formattedDrinkData = reFormatDrinkData(drinkData);
 
         curSearchResults = formattedDrinkData;
         curFilter = searchMethod.filter;
@@ -123,7 +123,7 @@ app.post("/drinkInfo", async(req, res) => {
             throw new Error("Sorry, there was an error trying to get info on that drink :("); 
         }
 
-        let formattedDrinkData = formatDrinks(drinkData); 
+        let formattedDrinkData = reFormatDrinkData(drinkData); 
         curDrink = formattedDrinkData[0];
         
         res.render(`${staticFileNames.drinkInfo}.ejs`, {
@@ -157,12 +157,12 @@ app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
 });
 
-function formatDrinks(drinksArr) {
-    let formattedDrinks;
+function reFormatDrinkData(drinksArr) {
+    let formattedDrinks = drinksArr;
 
-    removeNullValues(drinksArr);
+    removeNullValues(formattedDrinks);
 
-    formattedDrinks = formatIngredientData(drinksArr);
+    formattedDrinks = formatIngredientsInDrinks(formattedDrinks);
 
     return formattedDrinks;
 }
@@ -178,16 +178,17 @@ function removeNullValues(objArr) {
     });    
 }
 
-function formatIngredientData(drinksArr){
-    let formattedDrinks = [];
+function formatIngredientsInDrinks(drinksArr){
+    let newDrinkData = [];
 
     drinksArr.forEach(drink => {
         let ingredientList = createIngredientList(drink);
-        drink["ingredients"] = ingredientList;
-        formattedDrinks.push(drink);
+        drink.ingredients = ingredientList;
+
+        newDrinkData.push(drink);
     });
 
-    return formattedDrinks;
+    return newDrinkData;
 }
 
 function createIngredientList(drink) {
