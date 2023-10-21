@@ -1,3 +1,5 @@
+Live demo: https://cocktail-api-app.onrender.com/
+
 # CocktailProject:
 
 A project that makes use of a cocktail api for users to search recipes for cocktails!
@@ -11,6 +13,8 @@ A project that makes use of a cocktail api for users to search recipes for cockt
 
 - Get a random cocktail recipe
 - Search for cocktail recipe's by either searching for specific ingredients used in cocktails or a name of a recipe
-- Search for cocktail recipe's that start with a specific letter
+- Search based on alchohol contents
+- Find info on the drinks and the ingredients of any drink
+- Responsive design
 
 # API used: https://www.thecocktaildb.com/api.php (free version)
