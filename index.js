@@ -157,6 +157,16 @@ app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
 });
 
+function formatDrinks(drinksArr) {
+    let formattedDrinks;
+
+    removeNullValues(drinksArr);
+
+    formattedDrinks = formatIngredientData(drinksArr);
+
+    return formattedDrinks;
+}
+
 function removeNullValues(objArr) {
     objArr.forEach(obj => {
         //Gets rid of all key's that are equal to null
@@ -166,6 +176,18 @@ function removeNullValues(objArr) {
             }
         });
     });    
+}
+
+function formatIngredientData(drinksArr){
+    let formattedDrinks = [];
+
+    drinksArr.forEach(drink => {
+        let ingredientList = createIngredientList(drink);
+        drink["ingredients"] = ingredientList;
+        formattedDrinks.push(drink);
+    });
+
+    return formattedDrinks;
 }
 
 function createIngredientList(drink) {
@@ -189,28 +211,6 @@ function createIngredientList(drink) {
         }
     });
     return ingredientList;
-}
-
-function formatIngredientData(drinksArr){
-    let formattedDrinks = [];
-
-    drinksArr.forEach(drink => {
-        let ingredientList = createIngredientList(drink);
-        drink["ingredients"] = ingredientList;
-        formattedDrinks.push(drink);
-    });
-
-    return formattedDrinks;
-}
-
-function formatDrinks(drinksArr) {
-    let formattedDrinks;
-
-    removeNullValues(drinksArr);
-
-    formattedDrinks = formatIngredientData(drinksArr);
-
-    return formattedDrinks;
 }
 
 function determineSearchMethod(data) {
